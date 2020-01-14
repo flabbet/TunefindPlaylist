@@ -17,11 +17,20 @@ def main():
     try:
         manager = PlaylistManager(device_id)
     except InvalidDeviceId as ex:
-        manager = PlaylistManager(ex.valid_device_ids[0])
+        try:
+            manager = PlaylistManager(ex.valid_device_ids[0])
+        except IndexError:
+            print("Didn't found valid device.")
+            return
 
     if not manager.client.is_authenticated():
         print("Login failed")
         return
+
+    if not manager.client.is_subscribed:
+        print("This account plan is too weak. Please upgrade your subscription in Google Play Store.")
+        return
+
     scraper = SongsScraper(sys.argv[1])
     playlist_name = scraper.get_playlist_name()
     songs = scraper.get_songs()
