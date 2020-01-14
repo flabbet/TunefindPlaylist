@@ -19,6 +19,9 @@ def main():
     except InvalidDeviceId as ex:
         manager = PlaylistManager(ex.valid_device_ids[0])
 
+    if not manager.client.is_authenticated():
+        print("Login failed")
+        return
     scraper = SongsScraper(sys.argv[1])
     playlist_name = scraper.get_playlist_name()
     songs = scraper.get_songs()
